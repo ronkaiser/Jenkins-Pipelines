@@ -1,0 +1,16 @@
+pipeline {
+
+  agent any
+
+    stages {
+
+      // Trigger deployment
+      stage('deployment approval') {
+        steps {
+          script {
+          def job = build job: 'SMS_DEV_DOCKER_DEPLOYER', parameters: [[$class: 'StringParameterValue', name: 'image_build', value: "$BUILD_NUMBER"]]
+          }
+        }
+      }
+    }
+}
