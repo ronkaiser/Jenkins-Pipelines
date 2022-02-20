@@ -1,0 +1,15 @@
+pipeline {
+    environment {
+      AGENT = "${params.AGENT ?: 'any'}"
+    }
+    agent {
+        label params.AGENT == "any" ? "" : params.AGENT 
+    }
+        stages {
+          stage('Agent selection') {
+            steps {
+              echo "${AGENT}"
+            }
+          }
+        }
+}
