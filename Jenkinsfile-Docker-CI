@@ -1,0 +1,43 @@
+pipeline {
+  agent any
+  tools {nodejs "nodejs"}
+
+  options {
+    timestamps ()
+  }
+
+  environment {
+    dockerImage = ''
+    registry = 'ronkaiser86/test'
+    registryCredential = 'credential_id'
+  }
+
+    stages {
+      // clean environment
+      stage('Checkout') {
+        steps {
+          cleanWs()
+          checkout scm
+        }
+      }
+      
+      // docker build image
+      stage('Docker build') {
+        steps {
+          script {
+            dockerImage = docker.build registry
+          }
+        }
+      }
+
+      //docker push image to registry
+      stage('Docker push') {
+        steps {
+          script {
+            docker.withRegistry( '', registryCredential ) {
+            dockerImage.push("$BUILD_NUMBER")
+            dockerImage.push('latest')
+            }
+          }
+        }
+      }
