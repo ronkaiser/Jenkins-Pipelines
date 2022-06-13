@@ -41,5 +41,13 @@ pipeline {
           }
         }
       }
+      
+      // remove docker image
+      stage('Remove Image') {
+        steps {
+          sh "docker rmi $imagename:$BUILD_NUMBER"
+          sh "docker rmi $imagename:latest"
+        }
+      }  
     }
 }
