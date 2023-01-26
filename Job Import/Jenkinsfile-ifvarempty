@@ -1,0 +1,29 @@
+pipeline {
+    agent {
+        label "prod"
+    }
+
+    options {
+        timestamps()
+    }
+
+    stages {
+        stage('set image tag') {
+            steps {
+                script {
+                   if ( IMAGE_TAG.isEmpty() ) {
+                       IMAGE_TAG = sh (
+                           script: 'curl -u "jenkinsuser@[domain].co:1144b6322e4ae7219e521230fc6e386bc7" -k  https://jenkinsmaster.[domain].co:8443/job/BUILD_AND_PUSH/lastSuccessfulBuild/buildNumber',
+                           returnStdout: true).trim()
+                   }
+                }
+            }
+        }
+
+        stage('echo build number') {
+            steps {
+                echo "${IMAGE_TAG}"
+            }
+        }
+    }
+}
